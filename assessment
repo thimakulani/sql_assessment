@@ -1,0 +1,12 @@
+Q1 
+
+CREATE TABLE Employees (
+    EmployeeNo INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    LastName VARCHAR(50) NOT NULL,
+    FirstName VARCHAR(50) NOT NULL,
+    Gender CHAR(1) NOT NULL,
+    IDNumber VARCHAR(20) NOT NULL,
+    SalaryLevelId INT,
+    DepartmentID INT,
+    CONSTRAINT FK_Department FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID) -- Replace 'Departments' with the name of your department table
+);
