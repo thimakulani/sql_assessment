@@ -184,3 +184,65 @@ Index Fragmentation: Over time, indexes may become fragmented as data is inserte
 Query Optimizer Overhead: The query optimizer needs to consider the available indexes when generating query execution plans. Having a large number of indexes can increase the complexity of query optimization and may lead to suboptimal query plans in some cases.
 
 Indexes Can Become Outdated: If indexes are not properly maintained or if the data distribution in the table changes significantly, indexes may become outdated and less effective. Regular monitoring and maintenance are required to ensure indexes remain relevant and provide optimal performance.
+
+2.1.2 ISNULL always takes exactly two arguments.
+COALESCE can take two or more arguments.
+2.1.3
+2.1.4 Using a relational table structure, where related data is organized into separate tables and linked through relationships, offers several advantages over having all fields in a single table:
+
+Normalization: Relational databases use normalization techniques to minimize redundancy and dependency in the data. By breaking down the data into separate tables and linking them through relationships, normalization reduces data duplication and ensures data integrity.
+
+Scalability: Relational databases are more scalable and flexible. As the data grows, it's easier to manage and maintain a relational database structure. Adding new fields or modifying existing ones is less disruptive when the data is organized into separate tables.
+
+Data Integrity: By enforcing referential integrity through foreign key constraints, relational databases ensure that the relationships between tables are maintained. This helps prevent orphaned or inconsistent data, ensuring data integrity.
+
+Performance: Relational databases are optimized for querying and retrieving data efficiently. With proper indexing and query optimization, relational databases can handle complex queries across multiple tables effectively.
+
+Concurrency: Relational databases support concurrent access to data by multiple users or applications. By managing transactions and locking mechanisms, relational databases ensure data consistency and concurrency control.
+
+Security: Relational databases provide robust security features, such as user authentication, authorization, and encryption, to protect sensitive data. Access to data can be controlled at the table level, providing granular security controls.
+
+Overall, using a relational table structure promotes data organization, integrity, scalability, and performance, making it a preferred choice for most database applications, especially those dealing with complex data relationships and large datasets.
+
+
+3.1 Creating a Function dbo.MapEcentricTestTable
+To create the function dbo.MapEcentricTestTable, you can use the following SQL script:
+
+sql
+Copy code
+CREATE FUNCTION dbo.MapEcentricTestTable (@Name VARCHAR(255))
+RETURNS INT
+AS
+BEGIN
+    DECLARE @ID INT;
+
+    SELECT @ID = ID
+    FROM dbo.EcentricTestTable
+    WHERE Name = @Name;
+
+    RETURN @ID;
+END;
+This function takes a Name parameter and returns the corresponding ID from the EcentricTestTable.
+
+3.2 Optimizing the Query
+To optimize the query, you can rewrite it to directly use the function and eliminate the need for joining tables:
+
+sql
+Copy code
+SELECT *
+FROM dbo.EcentricTestTable_NEW
+WHERE ID = dbo.MapEcentricTestTable('Test2');
+This query directly uses the dbo.MapEcentricTestTable function to get the ID corresponding to the name 'Test2' and then retrieves the corresponding row from EcentricTestTable_NEW.
+
+4. Understanding NULL Comparisons
+4.1 The result of the query SELECT CASE WHEN NULL = NULL THEN 'Yes' ELSE 'No' END AS Result will be 'No'. This is because in SQL, NULL is not equal to anything, not even to itself. Therefore, the condition NULL = NULL evaluates to FALSE, and the ELSE clause is executed.
+
+4.2 Different settings and configurations can influence the behavior of NULL comparisons. For instance, some databases have options or configurations that can change the behavior of NULL comparisons, such as the ANSI_NULLS setting in SQL Server.
+
+4.3 Here's a query that demonstrates different behavior based on the ANSI_NULLS setting:
+
+sql
+Copy code
+SET ANSI_NULLS OFF;
+SELECT CASE WHEN NULL = NULL THEN 'Yes' ELSE 'No' END AS Result;
+With ANSI_NULLS OFF, the result of the query will be 'Yes'. This is because it changes the behavior of NULL comparisons to treat NULL = NULL as TRUE. However, it's important to note that using ANSI_NULLS OFF is not recommended, as it can lead to unexpected behavior and is deprecated in newer versions of SQL Server.
